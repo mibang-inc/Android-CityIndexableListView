@@ -1,3 +1,9 @@
 indexablelistview-lib1/target
 indexablelistview-lib2/target
 indexablelistview-sample/target
+
+/indexablelistview-sample/indexablelistview-sample.iml
+indexablelistview-lib1/target/*.*
+indexablelistview-lib2/target/*.*
+
+PinnedSectionListView.java
