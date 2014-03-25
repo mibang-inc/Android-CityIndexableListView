@@ -24,19 +24,22 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
     private int TYPE_ITEM = 0;
     private int TYPE_SECTION = 1;
 
-    private final int SECTION_POPULAR_CITY = 0;
+    private final int SECTION_GPS_CITY     = 0;
+    private final int SECTION_POPULAR_CITY = 1;
 
     private List<String> mSections = new ArrayList<String>();
     private List<Item> mItems;
     private Context mContext;
     private Map<String, Character> mCityMap = new HashMap<String, Character>();
-    private int mSkipItemCount;
-    
-    public ContentAdapter(Context context, List<String> popCities, List<String> cities) {
-        this(context, popCities, cities, null);
+
+    private int mPopCityItemCount;
+    private int mGpsCityItemCount;
+
+    public ContentAdapter(Context context,List<String> gpsCity, List<String> popCities, List<String> cities) {
+        this(context,gpsCity, popCities, cities, null);
     }
 
-    public ContentAdapter(Context context, List<String> popCities, List<String> cities, Map<String, Character> cityMap) {
+    public ContentAdapter(Context context, List<String> gpsCity, List<String> popCities, List<String> cities, Map<String, Character> cityMap) {
         mCityMap = cityMap;
         mContext = context;
         mItems = new ArrayList<Item>();
@@ -45,19 +48,33 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
         }
         Collections.sort(cities, new CityComparator());
 
-        //Popular cities.
+//        //gps city
+        Item gpsTitleItem = new Item();
+        gpsTitleItem.type = TYPE_SECTION;
+        gpsTitleItem.text = "定位城市";
+        mItems.add(gpsTitleItem);
+        mSections.add(0,"定");
+        Item gpsItem = new Item();
+        gpsItem.type = TYPE_ITEM;
+        gpsItem.text = gpsCity.get(0);
+        mItems.add(gpsItem);
+
+
+//        //Popular cities.
         Item item = new Item();
         item.type = TYPE_SECTION;
         item.text = "热门城市";
         mItems.add(item);
-        mSections.add(0, "热");
+        mSections.add(1, "热");
         for (String city : popCities) {
             item = new Item();
             item.type = TYPE_ITEM;
             item.text = city;
             mItems.add(item);
         }
-        mSkipItemCount = 1 + popCities.size();
+        mGpsCityItemCount = 2;
+        mPopCityItemCount  = mGpsCityItemCount  + 1 + popCities.size();
+
 
         //Common cities.
         char prevChar = '.';
@@ -102,14 +119,18 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
 
     @Override
     public int getPositionForSection(int section) {
-
-        if (section == SECTION_POPULAR_CITY) {
+        System.out.println("section is " + section);
+        if (section == SECTION_GPS_CITY) {
             return 0;
+        }
+        if (section == SECTION_POPULAR_CITY) {
+            return 2;
         }
 
         // If there is no item for current section, previous section will be selected
         for (int i = section; i >= 1; i--) {
-            for (int j = mSkipItemCount; j < getCount(); j++) {
+
+            for (int j = mPopCityItemCount; j < getCount(); j++) {
                 if (i == 0) {
                     // For numeric section
                     for (int k = 0; k <= 9; k++) {
@@ -130,8 +151,12 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
 
     @Override
     public int getSectionForPosition(int position) {
-        if (position < mSkipItemCount) {
+        if (position < mGpsCityItemCount) {
             return 0;
+        }
+
+        if (position>mGpsCityItemCount && position< mPopCityItemCount){
+            return 1;
         }
 
         for (int i = 0; i < mSections.size(); i ++) {
@@ -153,7 +178,7 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
                     android.R.layout.simple_list_item_1, parent, false);
         }
         int type = getItemViewType(position);
-        ((TextView)view).setText(mItems.get(position).text); 
+        ((TextView)view).setText(mItems.get(position).text);
         if (isItemViewTypePinned(type)) {
             view.setBackgroundColor(0xff4dbdff);
             ((TextView)view).setTextColor(0xffffffff);
@@ -166,7 +191,7 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
 
     @Override
     public int getItemViewType(int position) {
-        return mItems.get(position).type; 
+        return mItems.get(position).type;
     }
 
     @Override
@@ -174,7 +199,7 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
         return 2;
     }
 
-    @Override 
+    @Override
     public boolean isItemViewTypePinned(int type) {
         return type == TYPE_SECTION;
     }
@@ -240,5 +265,12 @@ public class ContentAdapter extends BaseAdapter implements SectionIndexer, Pinne
     public static class Item {
         public int type;
         public String text;
+    }
+
+    public void setGpsCity(String name){
+        Item gpsItem = new Item();
+        gpsItem.type = TYPE_ITEM;
+        gpsItem.text = name;
+        mItems.set(1,gpsItem);
     }
 }

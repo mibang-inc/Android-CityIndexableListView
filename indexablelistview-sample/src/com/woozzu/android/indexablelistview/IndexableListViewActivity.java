@@ -24,7 +24,9 @@ public class IndexableListViewActivity extends Activity {
 	private ArrayList<String> mItems;
 	private IndexableListView mListView;
 
-    public static final String[] POPULAR_CITIES = {"安徽省", "地级市", "合肥", "宿州", "淮北", "阜阳", "蚌埠", "淮南", "滁州", "马鞍",};
+    public static final String[] GPS_CITY = {"杭州",};
+
+    public static final String[] POPULAR_CITIES = {"安徽省",};
 
     public static final String[] CITIES = {"安徽省", "地级市", "合肥", "宿州", "淮北", "阜阳", "蚌埠", "淮南", "滁州", "马鞍",
         "福州", "厦门", "泉州", "龙岩", "宁德", "三明", "南平", "漳州", 
@@ -34,6 +36,11 @@ public class IndexableListViewActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        List<String> gpsItems = new ArrayList<String>();
+        for (String s : GPS_CITY) {
+            gpsItems.add(s);
+        }
 
         List<String> popItems = new ArrayList<String>();
         for (String s : POPULAR_CITIES) {
@@ -45,7 +52,7 @@ public class IndexableListViewActivity extends Activity {
             mItems.add(s);
         }
 
-        ContentAdapter adapter = new ContentAdapter(this, popItems, mItems);
+        ContentAdapter adapter = new ContentAdapter(this,gpsItems, popItems, mItems);
         mListView = (IndexableListView) findViewById(R.id.listview);
         mListView.setAdapter(adapter);
         mListView.setFastScrollEnabled(true);
