@@ -11,6 +11,7 @@
     <artifactId>indexablelistview-lib1</artifactId>
     <packaging>apklib</packaging>
     <name>Library Projects - lib1</name>
+    <version>1.0.1</version>
 
     <dependencies>
         <dependency>

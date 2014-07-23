@@ -6,4 +6,4 @@ indexablelistview-sample/target
 indexablelistview-lib1/target/*.*
 indexablelistview-lib2/target/*.*
 
-PinnedSectionListView.java
+.idea/
